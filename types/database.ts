@@ -51,6 +51,7 @@ export interface Question {
   arabic_text: string | null;
   transliteration: string | null;
   question_type: QuestionType;
+  audio_url: string | null;
   sort_order: number;
   created_at: string;
 }
