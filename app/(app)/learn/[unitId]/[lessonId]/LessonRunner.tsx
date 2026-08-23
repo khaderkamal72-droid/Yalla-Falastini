@@ -3,9 +3,13 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { X, Check } from "lucide-react";
 import { HeartDisplay } from "@/components/ui/HeartDisplay";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { QuestionCard } from "@/components/learning/QuestionCard";
+import { TranslateQuestion } from "@/components/learning/TranslateQuestion";
+import { ListeningQuestion } from "@/components/learning/ListeningQuestion";
+import { ArrangeQuestion } from "@/components/learning/ArrangeQuestion";
 import { VocabularyCard } from "@/components/learning/VocabularyCard";
 import { Button } from "@/components/ui/Button";
 import { Confetti } from "@/components/ui/Confetti";
@@ -107,42 +111,88 @@ export function LessonRunner({
     setStep(nextStep);
   }
 
+  function renderQuestion(q: Question & { question_options: QuestionOption[] }) {
+    switch (q.question_type) {
+      case "translate":
+        return (
+          <TranslateQuestion
+            promptEn={q.prompt_en}
+            arabicText={q.arabic_text}
+            transliteration={q.transliteration}
+            audioUrl={q.audio_url ?? undefined}
+            acceptedAnswers={q.question_options}
+            onAnswered={handleAnswered}
+          />
+        );
+      case "listening":
+        return (
+          <ListeningQuestion
+            promptEn={q.prompt_en}
+            arabicText={q.arabic_text}
+            audioUrl={q.audio_url ?? undefined}
+            options={q.question_options}
+            onAnswered={handleAnswered}
+          />
+        );
+      case "arrange":
+        return (
+          <ArrangeQuestion
+            promptEn={q.prompt_en}
+            arabicText={q.arabic_text ?? ""}
+            transliteration={q.transliteration}
+            audioUrl={q.audio_url ?? undefined}
+            onAnswered={handleAnswered}
+          />
+        );
+      default:
+        return (
+          <QuestionCard
+            promptEn={q.prompt_en}
+            arabicText={q.arabic_text}
+            audioUrl={q.audio_url ?? undefined}
+            options={q.question_options}
+            onAnswered={handleAnswered}
+          />
+        );
+    }
+  }
+
   if (finished) {
     return (
       <div className="flex flex-col items-center justify-center flex-1 px-8 text-center py-16 relative overflow-hidden">
-        <Confetti />
+        <Confetti count={44} />
         <motion.div
-          initial={{ scale: 0.4, opacity: 0, rotate: -12 }}
-          animate={{ scale: 1, opacity: 1, rotate: 0 }}
-          transition={{ type: "spring", stiffness: 260, damping: 16 }}
-          className="text-6xl mb-3"
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 240, damping: 18 }}
+          className="w-16 h-16 rounded-full bg-forest/10 flex items-center justify-center mb-4"
         >
-          🎉
+          <Check size={30} strokeWidth={2.6} className="text-forest" />
         </motion.div>
         <motion.h1
-          initial={{ y: 12, opacity: 0 }}
+          initial={{ y: 10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.15 }}
           className="font-display font-extrabold text-2xl text-forest-dark mb-1"
         >
-          Yalla! Lesson complete
+          Lesson complete
         </motion.h1>
         <motion.p
-          initial={{ y: 12, opacity: 0 }}
+          initial={{ y: 10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
           className="text-gold font-extrabold text-lg mb-8 flex items-center gap-1"
         >
-          +<CountUp to={xpReward} duration={0.8} playTicks /> XP earned
+          +<CountUp to={xpReward} duration={0.8} playTicks /> XP
         </motion.p>
         <motion.div
-          initial={{ y: 12, opacity: 0 }}
+          initial={{ y: 10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.45 }}
           className="w-full"
         >
           <Button fullWidth onClick={() => router.push("/learn")}>
-            Back to path
+            Continue
           </Button>
         </motion.div>
       </div>
@@ -155,9 +205,9 @@ export function LessonRunner({
         <button
           onClick={() => router.push(`/learn`)}
           aria-label="Close lesson"
-          className="text-xl text-ink-soft"
+          className="text-ink-soft hover:text-ink transition-colors"
         >
-          ✕
+          <X size={20} />
         </button>
         <ProgressBar value={(step / totalSteps) * 100} trackClassName="bg-cream-soft" />
         <HeartDisplay hearts={hearts} />
@@ -167,10 +217,10 @@ export function LessonRunner({
         {isVocabStep && currentVocab && !showSuccess && (
           <motion.div
             key={`vocab-${currentVocab.id}`}
-            initial={{ opacity: 0, x: 24 }}
+            initial={{ opacity: 0, x: 16 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -24 }}
-            transition={{ duration: 0.22 }}
+            exit={{ opacity: 0, x: -16 }}
+            transition={{ duration: 0.2 }}
           >
             <VocabularyCard
               arabicText={currentVocab.arabic_text}
@@ -186,18 +236,12 @@ export function LessonRunner({
         {!isVocabStep && currentQuestion && !showSuccess && (
           <motion.div
             key={`question-${currentQuestion.id}`}
-            initial={{ opacity: 0, x: 24 }}
+            initial={{ opacity: 0, x: 16 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -24 }}
-            transition={{ duration: 0.22 }}
+            exit={{ opacity: 0, x: -16 }}
+            transition={{ duration: 0.2 }}
           >
-            <QuestionCard
-              promptEn={currentQuestion.prompt_en}
-              arabicText={currentQuestion.arabic_text}
-              audioUrl={currentQuestion.audio_url ?? undefined}
-              options={currentQuestion.question_options}
-              onAnswered={handleAnswered}
-            />
+            {renderQuestion(currentQuestion)}
           </motion.div>
         )}
       </AnimatePresence>
@@ -223,18 +267,18 @@ export function LessonRunner({
             }
           >
             <motion.div
-              initial={{ scale: 0.3 }}
+              initial={{ scale: 0.5 }}
               animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 400, damping: 14, delay: 0.05 }}
-              className="text-3xl"
+              transition={{ type: "spring", stiffness: 400, damping: 16, delay: 0.05 }}
+              className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center"
             >
-              {lastAnswerCorrect ? "✓" : "✕"}
+              {lastAnswerCorrect ? <Check size={20} strokeWidth={2.6} /> : <X size={20} strokeWidth={2.6} />}
             </motion.div>
-            <p className="font-display font-extrabold text-lg mt-1">
-              {lastAnswerCorrect ? "Correct!" : "Not quite"}
+            <p className="font-display font-extrabold text-lg mt-2">
+              {lastAnswerCorrect ? "Correct" : "Incorrect"}
             </p>
             <p className="text-gold-light font-bold text-sm mb-4">
-              {lastAnswerCorrect ? "+10 XP" : "Keep going!"}
+              {lastAnswerCorrect ? "+10 XP" : "Review this later"}
             </p>
             <Button variant="gold" fullWidth onClick={handleContinue}>
               Continue

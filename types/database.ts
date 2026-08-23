@@ -4,7 +4,7 @@
 // (requires SUPABASE_PROJECT_ID in your env)
 
 export type LessonType = "quiz" | "listening" | "arrange" | "matching" | "vocabulary";
-export type QuestionType = "multiple_choice" | "listening" | "arrange" | "matching";
+export type QuestionType = "multiple_choice" | "translate" | "listening" | "arrange";
 export type LessonStatus = "not_started" | "in_progress" | "completed";
 export type GenderNote = "male" | "female" | null;
 

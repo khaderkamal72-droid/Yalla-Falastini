@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { Check, Lock, Star, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Lesson, Unit, UserLessonProgress } from "@/types/database";
 
@@ -74,7 +78,7 @@ export function LearnPathMap({ units, progressByLesson }: LearnPathMapProps) {
                   {unit.title}
                 </p>
               </div>
-              <div className="text-3xl">{unitFullyLocked ? "🔒" : "📖"}</div>
+              <div className="text-xl opacity-90">{unitFullyLocked ? <Lock size={22} /> : <BookOpen size={24} />}</div>
             </div>
 
             {/* Winding path */}
@@ -108,15 +112,19 @@ export function LearnPathMap({ units, progressByLesson }: LearnPathMapProps) {
                     style={{ left: p.x - NODE_SIZE / 2, top: p.y - NODE_SIZE / 2, width: NODE_SIZE }}
                   >
                     {status === "current" && (
-                      <div className="absolute -top-9 left-1/2 -translate-x-1/2 bg-forest-dark text-cream text-[10px] font-extrabold uppercase tracking-wide px-3 py-1 rounded-full whitespace-nowrap shadow-card-sm animate-bounce">
+                      <motion.div
+                        className="absolute -top-8 left-1/2 -translate-x-1/2 bg-forest-dark text-cream text-[10px] font-bold uppercase tracking-wide px-3 py-1 rounded-full whitespace-nowrap shadow-card-sm"
+                        animate={{ y: [0, -3, 0] }}
+                        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                      >
                         Start
-                      </div>
+                      </motion.div>
                     )}
                     <Link
                       href={status === "locked" ? "#" : `/learn/${unit.id}/${lesson.id}`}
                       aria-disabled={status === "locked"}
                       className={cn(
-                        "rounded-full flex items-center justify-center text-[26px] border-b-[5px] transition-transform active:scale-95 active:border-b-2",
+                        "rounded-full flex items-center justify-center border-b-[5px] transition-transform active:scale-95 active:border-b-2",
                         status === "locked" && "pointer-events-none"
                       )}
                       style={{
@@ -133,7 +141,13 @@ export function LearnPathMap({ units, progressByLesson }: LearnPathMapProps) {
                         color: status === "locked" ? "#A79E7C" : status === "current" ? "#3D2B14" : "#fff",
                       }}
                     >
-                      {status === "done" ? "✓" : status === "locked" ? "🔒" : "⭐"}
+                      {status === "done" ? (
+                        <Check size={26} strokeWidth={2.8} />
+                      ) : status === "locked" ? (
+                        <Lock size={20} />
+                      ) : (
+                        <Star size={24} fill="currentColor" strokeWidth={1} />
+                      )}
                     </Link>
                     <p
                       className={cn(

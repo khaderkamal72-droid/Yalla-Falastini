@@ -1,3 +1,4 @@
+import { Lightbulb } from "lucide-react";
 import { AudioPlayer } from "@/components/learning/AudioPlayer";
 import type { GenderNote } from "@/types/database";
 
@@ -36,8 +37,9 @@ export function VocabularyCard({
       </div>
 
       {tip && (
-        <div className="mt-6 bg-beige rounded-2xl px-4 py-3.5 text-sm font-semibold text-forest-dark">
-          💡 {tip}
+        <div className="mt-6 bg-beige rounded-2xl px-4 py-3.5 text-sm font-semibold text-forest-dark flex gap-2.5 text-left">
+          <Lightbulb size={18} className="text-gold flex-shrink-0 mt-0.5" />
+          <span>{tip}</span>
         </div>
       )}
     </div>
