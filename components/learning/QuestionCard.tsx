@@ -40,7 +40,7 @@ export function QuestionCard({
         </p>
       )}
       <div className="flex justify-center my-4">
-        <AudioPlayer src={audioUrl} />
+        <AudioPlayer src={audioUrl} fallbackText={arabicText} />
       </div>
 
       <div className="flex flex-col gap-3 mt-5">

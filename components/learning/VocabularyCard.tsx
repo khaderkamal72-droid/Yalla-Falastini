@@ -32,7 +32,7 @@ export function VocabularyCard({
       <p className="text-ink-soft mt-1">{englishTranslation}</p>
 
       <div className="mt-5">
-        <AudioPlayer src={audioUrl ?? undefined} />
+        <AudioPlayer src={audioUrl ?? undefined} fallbackText={arabicText} />
       </div>
 
       {tip && (
