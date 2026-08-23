@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import { StatCard } from "@/components/ui/StatCard";
 import { LessonCard } from "@/components/learning/LessonCard";
 import { ProgressBar } from "@/components/ui/ProgressBar";
+import { TatreezStrip } from "@/components/ui/TatreezStrip";
+import { Bell, Gift } from "lucide-react";
 import type { UserXp, UserStreak, Profile, VocabularyItem } from "@/types/database";
 
 export default async function DashboardPage() {
@@ -31,27 +33,30 @@ export default async function DashboardPage() {
 
   return (
     <div className="pb-4">
+      <TatreezStrip height={6} />
+
       <header className="flex items-center justify-between px-5 pt-5 pb-2">
         <div className="flex items-center gap-3">
-          <div className="w-11.5 h-11.5 w-[46px] h-[46px] rounded-full bg-gradient-to-br from-olive-light to-olive flex items-center justify-center font-display font-bold text-forest-dark text-lg">
+          <div className="w-[46px] h-[46px] rounded-full bg-gradient-to-br from-olive-light to-olive flex items-center justify-center font-display font-bold text-forest-dark text-lg shadow-card-sm">
             {displayName.charAt(0).toUpperCase()}
           </div>
           <div>
             <p className="font-display font-bold text-lg text-forest-dark">
               Ahlan, {displayName}! 👋
             </p>
-            <p className="text-xs text-ink-soft">Let&apos;s keep the good work going</p>
+            <p className="text-xs text-ink-soft">Keep going, you&apos;re doing great!</p>
           </div>
         </div>
-        <div className="w-10 h-10 rounded-full bg-cream-soft flex items-center justify-center text-lg">
-          🔔
+        <div className="relative w-10 h-10 rounded-full bg-cream-soft flex items-center justify-center">
+          <Bell size={18} className="text-forest-dark" />
+          <span className="absolute top-2 right-2.5 w-1.5 h-1.5 rounded-full bg-clay" />
         </div>
       </header>
 
       <div className="flex gap-2.5 px-5 pt-1.5 pb-1">
-        <StatCard emoji="🔥" value={currentStreak} label="Day streak" />
-        <StatCard emoji="⭐" value={totalXp.toLocaleString()} label="XP" />
-        <StatCard emoji="❤️" value="5/5" label="Hearts" />
+        <StatCard emoji="🔥" value={currentStreak} label="Day streak" tone="clay" />
+        <StatCard emoji="⭐" value={totalXp.toLocaleString()} label="XP" tone="gold" />
+        <StatCard emoji="❤️" value="5/5" label="Hearts" tone="olive" />
       </div>
 
       <h2 className="font-display font-bold text-base text-forest-dark px-5 pt-4.5 pb-2">
@@ -61,7 +66,9 @@ export default async function DashboardPage() {
       <LessonCard lessonNumber={3} title="Greetings" progressPct={75} />
 
       <div className="mx-5 mt-3.5 bg-beige rounded-2xl px-4 py-3.5 flex items-center gap-3">
-        <div className="text-2xl">🎁</div>
+        <div className="w-9 h-9 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0">
+          <Gift size={18} className="text-gold" />
+        </div>
         <div className="flex-1">
           <p className="font-bold text-[13.5px] text-forest-dark">Complete 2 lessons today</p>
           <div className="mt-1.5">
@@ -71,9 +78,12 @@ export default async function DashboardPage() {
         <p className="font-bold text-sm text-forest-dark">1/2</p>
       </div>
 
-      <h2 className="font-display font-bold text-base text-forest-dark px-5 pt-4.5 pb-2">
-        Recently learned
-      </h2>
+      <div className="flex items-center justify-between px-5 pt-4.5 pb-2">
+        <h2 className="font-display font-bold text-base text-forest-dark">Recently learned</h2>
+        <a href="/learn" className="text-xs font-bold text-forest">
+          View all
+        </a>
+      </div>
       <div className="flex gap-2.5 px-5">
         {(recentVocab ?? []).map((word) => (
           <div key={word.id} className="flex-1 bg-white rounded-2xl px-3 py-3 text-center shadow-card-sm">
